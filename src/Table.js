@@ -13,14 +13,11 @@ export class Table extends React.Component {
       </tr>
     )
 
-    // console.log(this.props.data.complaint[0])
-    let complaints = this.props.data.complaint
-    // console.log(complaint);
+    const complaints = this.props.data.complaint
 
     const rows = complaints.map((complaint)=> {
-      // console.log(complaint);
       return (
-        <tr>
+        <tr key={complaint.id}>
           <td> {complaint.company.name}</td>
           <td>{complaint.complaint}</td>
           <td>{complaint.source}</td>
