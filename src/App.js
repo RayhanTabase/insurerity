@@ -1,12 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import DisplayComplaints from './DisplayComplaints';
+import { KEY, COMPANYID } from './ENCRYPT';
 
 function App() {
   const [source, editSource] = useState('');
   const [complaint, editComplaint] = useState('');
-  const [companyName, editCompanyName] = useState('');
-  const companyId = "ad6f4da8-06af-45be-ba79-83156a72471f";
 
   const submitComplaint = (e) => {
     e.preventDefault();
@@ -14,7 +13,7 @@ function App() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-hasura-admin-secret': 'SECRET'
+        'x-hasura-admin-secret': KEY
       },
       body: JSON.stringify({
         query: `
@@ -27,7 +26,7 @@ function App() {
           variables: {
             source: source,
             complaint: complaint,
-            companyId: companyId
+            companyId: COMPANYID
           },
       }),
     })
@@ -43,9 +42,6 @@ function App() {
     if (value === 'complaint') {
       editComplaint(e.target.value)
     }
-    if (value === 'companyName') {
-      editCompanyName(e.target.value)
-    }
   }
 
   return (
@@ -54,7 +50,6 @@ function App() {
       <form onSubmit={submitComplaint} className="form-container">
         <input value={source} onChange={handleChange} name="source" placeholder='source' />
         <input value={complaint} onChange={handleChange} name="complaint" placeholder='complaint' />
-        {/* <input value={companyName} onChange={handleChange} name="companyName" placeholder='company name' /> */}
         <button type='submit'> Submit</button>
       </form>
       <h2 className='heading2'>List of Complaints</h2>
