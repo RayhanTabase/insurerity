@@ -67,36 +67,48 @@ function DisplayComplaints() {
     }
   `;
 
-  function ComplaintsPageWithData() {
-    const result = useQuery(
-      GET_COMPLAINTS
-    );
-    return <Table {...result} />;
-  }
-
   // function ComplaintsPageWithData() {
-  //   const { subscribeToMore, ...result } = useQuery(
-  //     COMPLAINTS_UPDATED,
+  //   const result = useQuery(
+  //     GET_COMPLAINTS
   //   );
-  
-  //   return (
-  //     <Table
-  //       {...result}
-  //       subscribeToNewComplaints={() =>
-  //         subscribeToMore({
-  //           document: COMPLAINTS_UPDATED,
-  //           updateQuery: (prev, { subscriptionData }) => {
-  //             if (!subscriptionData.data) return prev;
-  //             const newFeedItem = subscriptionData.data.complaints;
-  //             return Object.assign({}, prev, {
-  //               complaints: [newFeedItem, ...prev.complaints]
-  //             });
-  //           }
-  //         })
-  //       }
-  //     />
-  //   );
+  //   return <Table {...result} />;
   // }
+
+  function ComplaintsPageWithData() {
+    const { subscribeToMore, ...result } = useQuery(
+      GET_COMPLAINTS,
+    );
+  
+    return (
+      <Table
+        {...result}
+        subscribeToNewComplaints={() =>
+          subscribeToMore({
+            document: COMPLAINTS_UPDATED,
+            updateQuery: (prev, { subscriptionData }) => {
+              if (!subscriptionData.data) return prev;
+              const newFeedItem = subscriptionData.data.complaint;
+              if (!prev.data) {
+                return Object.assign({}, prev, {
+                  complaint: [newFeedItem[0]]
+              });
+              }
+              return Object.assign({}, prev, {
+                  complaint: [newFeedItem[0], ...prev.data.complaint]
+              });
+
+              // // import update from 'immutability-helper'; --- https://www.npmjs.com/package/immutability-helper
+              // return update(prev, {
+              //   complaint: {
+              //       $push: [newFeedItem],
+              //   },
+              // });
+          }
+          })
+        }
+      />
+    );
+  }
 
   return ComplaintsPageWithData();
 }

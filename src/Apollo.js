@@ -14,7 +14,7 @@ const httpLink = new HttpLink({
 });
 
 const wsLink = new GraphQLWsLink(createClient({
-  url: "https://test-demo-gql-backend.herokuapp.com/v1/graphql",
+  url: "wss://test-demo-gql-backend.herokuapp.com/v1/graphql",
   connectionParams: {
    headers: {
     'Content-Type': 'application/json',
