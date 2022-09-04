@@ -1,11 +1,15 @@
 import React from "react";
 
-export class Table extends Component {
-  componentDidMount() {
-    this.props.subscribeToNewComments();
-  }
+export class Table extends React.Component {
+  // componentDidMount() {
+  //   this.props.subscribeToNewComments();
+  // }
 
   createRow() {
+    const {loading} = this.props;
+    console.log(loading);
+    if (loading) return <div> Loading... </div>;
+    console.log(this.props)
     const rows = this.props.complaints.map((complaint)=> {
       return (
         <tr>
@@ -26,7 +30,7 @@ export class Table extends Component {
           <th>Complaint</th>
           <th>Source</th>
         </tr>
-        {createRow()}
+        {this.createRow()}
       </table>
     )
   }

@@ -3,7 +3,7 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { SECRET } from '../secrets';
+import {SECRET} from './secrets';
 
 const httpLink = new HttpLink({
   uri: "https://test-demo-gql-backend.herokuapp.com/v1/graphql",

@@ -57,7 +57,6 @@ function App() {
         <input value={companyName} onChange={handleChange} name="companyName" placeholder='company name' />
         <button type='submit'> Submit</button>
       </form>
-      <hr/>
       <h2 className='heading2'>List of Complaints</h2>
       <DisplayComplaints />
     </div>

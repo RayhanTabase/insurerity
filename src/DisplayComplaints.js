@@ -40,6 +40,20 @@ function DisplayComplaints() {
 
   // useEffect(()=> getComplaints(), [])
 
+  
+    const GET_COMPLAINTS = gql`
+      query MyQuery {
+        complaint(limit: 10, order_by: {created_at: desc}) {
+          id
+          company {
+            name
+          }
+          source
+          complaint
+        }
+      }
+    `;
+
   const COMPLAINTS_UPDATED = gql`
     subscription MySubscription {
       complaint(limit: 10, order_by: {created_at: desc}) {
@@ -53,36 +67,36 @@ function DisplayComplaints() {
     }
   `;
 
-  // function ComplaintsPageWithData() {
-  //   const result = useQuery(
-  //     COMPLAINTS_UPDATED
-  //   );
-  //   return <Table {...result} />;
-  // }
-
   function ComplaintsPageWithData() {
-    const { subscribeToMore, ...result } = useQuery(
-      COMPLAINTS_UPDATED,
+    const result = useQuery(
+      GET_COMPLAINTS
     );
-  
-    return (
-      <Table
-        {...result}
-        subscribeToNewComplaints={() =>
-          subscribeToMore({
-            document: COMPLAINTS_UPDATED,
-            updateQuery: (prev, { subscriptionData }) => {
-              if (!subscriptionData.data) return prev;
-              const newFeedItem = subscriptionData.data.complaints;
-              return Object.assign({}, prev, {
-                complaints: [newFeedItem, ...prev.complaints]
-              });
-            }
-          })
-        }
-      />
-    );
+    return <Table {...result} />;
   }
+
+  // function ComplaintsPageWithData() {
+  //   const { subscribeToMore, ...result } = useQuery(
+  //     COMPLAINTS_UPDATED,
+  //   );
+  
+  //   return (
+  //     <Table
+  //       {...result}
+  //       subscribeToNewComplaints={() =>
+  //         subscribeToMore({
+  //           document: COMPLAINTS_UPDATED,
+  //           updateQuery: (prev, { subscriptionData }) => {
+  //             if (!subscriptionData.data) return prev;
+  //             const newFeedItem = subscriptionData.data.complaints;
+  //             return Object.assign({}, prev, {
+  //               complaints: [newFeedItem, ...prev.complaints]
+  //             });
+  //           }
+  //         })
+  //       }
+  //     />
+  //   );
+  // }
 
   return ComplaintsPageWithData();
 }
