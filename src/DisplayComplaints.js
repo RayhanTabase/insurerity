@@ -13,6 +13,7 @@ function DisplayComplaints() {
           }
           source
           complaint
+          created_at
         }
       }
     `;
@@ -26,6 +27,7 @@ function DisplayComplaints() {
         }
         source
         complaint
+        created_at
       }
     }
   `;
@@ -45,7 +47,7 @@ function DisplayComplaints() {
               if (!subscriptionData.data) return prev;
               const newFeedItem = subscriptionData.data.complaint;
               return Object.assign({}, prev, {
-                  complaint: [newFeedItem.complaint, ...prev.complaint]
+                  complaint: [newFeedItem[0], ...prev.complaint]
               });
 
               // // import update from 'immutability-helper'; --- https://www.npmjs.com/package/immutability-helper
