@@ -39,27 +39,72 @@ function DisplayComplaints() {
 
   useEffect(()=> getComplaints(), [])
 
-  // const COMPLAINTS_UPDATED = gql`
-  //   subscription MySubscription {
-  //     complaint(limit: 10, order_by: {created_at: desc}) {
-  //       id
-  //       company {
-  //         name
-  //       }
-  //       source
-  //       complaint
-  //     }
-  //   }
-  // `;
+  const COMPLAINTS_UPDATED = gql`
+    subscription MySubscription {
+      complaint(limit: 10, order_by: {created_at: desc}) {
+        id
+        company {
+          name
+        }
+        source
+        complaint
+      }
+    }
+  `;
 
-  // function LatestComplaints() {
-  //   const { data, loading } = useSubscription(
-  //     COMPLAINTS_UPDATED,
-  //   );
-  //   return <h4>New comment: {!loading && data.commentAdded.content}</h4>;
-  // }
+  function LatestComplaint() {
+    const { data, loading } = useSubscription(
+      COMPLAINTS_UPDATED,
+    );
+    if (!loading) {
+      const complaint = data[0]
+      return (
+        <tr>
+          <td> {complaint.company.name}</td>
+          <td>{complaint.complaint}</td>
+          <td>{complaint.source}</td>
+        </tr>
+      )
+    }
+    return <div></div>
+  }
 
-  // console.log(LatestComplaints)
+  function ComplaintsPageWithData() {
+    const result = useQuery(
+      COMPLAINTS_UPDATED
+    );
+    return <CommentsPage {...result} />;
+  }
+
+  const LinkList = () => {
+    const {
+      data,
+      loading,
+      error,
+      subscribeToMore
+    } = useQuery(FEED_QUERY);
+  
+    subscribeToMore({
+      document: COMPLAINTS_UPDATED,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const newLink = subscriptionData.data.newLink;
+        const exists = prev.feed.links.find(
+          ({ id }) => id === newLink.id
+        );
+        if (exists) return prev;
+    
+        return Object.assign({}, prev, {
+          feed: {
+            links: [newLink, ...prev.feed.links],
+            count: prev.feed.links.length + 1,
+            __typename: prev.feed.__typename
+          }
+        });
+      }
+    });
+  
+  };
 
   const createRow = () => {
     const rows = complaints.map((complaint)=> {
