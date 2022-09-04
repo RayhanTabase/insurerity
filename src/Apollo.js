@@ -23,7 +23,6 @@ const wsLink = new GraphQLWsLink(createClient({
   },
 }));
 
-
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
@@ -40,16 +39,5 @@ const client = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache()
 });
-
-const COMPLAINTS_SUBSCRIPTION = gql`
-  subscription OnCommentAdded($postID: ID!) {
-    commentAdded(postID: $postID) {
-      id
-      content
-    }
-  }
-`;
-
-
 
 export default client
