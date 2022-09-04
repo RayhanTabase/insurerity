@@ -1,14 +1,18 @@
 import React from "react";
 
-export class Table extends Component {
+export class Table extends React.Component {
   componentDidMount() {
-    this.props.subscribeToNewComments();
+    this.props.subscribeToNewComplaints();
   }
 
   createRow() {
-    const rows = this.props.complaints.map((complaint)=> {
+    const {loading} = this.props;
+    if (loading) return false;
+    const complaints = this.props.data.complaint
+
+    const rows = complaints.map((complaint)=> {
       return (
-        <tr>
+        <tr key={complaint.created_at}>
           <td> {complaint.company.name}</td>
           <td>{complaint.complaint}</td>
           <td>{complaint.source}</td>
@@ -20,14 +24,25 @@ export class Table extends Component {
 
   render() {
     return (
-      <table>
-        <tr>
-          <th>Company Name</th>
-          <th>Complaint</th>
-          <th>Source</th>
-        </tr>
-        {createRow()}
-      </table>
+      <>
+        { 
+          this.props.loading 
+          && 
+          <div className="loading-data"> Loading ... </div> 
+        }
+        <table>
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Complaint</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.createRow()}
+          </tbody>
+        </table>
+      </>
     )
   }
 }
