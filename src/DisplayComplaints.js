@@ -39,73 +39,25 @@ function DisplayComplaints() {
 
   useEffect(()=> getComplaints(), [])
 
-  // const COMPLAINTS_UPDATED = gql`
-  //   subscription MySubscription {
-  //     complaint(limit: 10, order_by: {created_at: desc}) {
-  //       id
-  //       company {
-  //         name
-  //       }
-  //       source
-  //       complaint
-  //     }
-  //   }
-  // `;
+  const COMPLAINTS_UPDATED = gql`
+    subscription MySubscription {
+      complaint(limit: 10, order_by: {created_at: desc}) {
+        id
+        company {
+          name
+        }
+        source
+        complaint
+      }
+    }
+  `;
 
-  // function LatestComplaint() {
-  //   const { data, loading } = useSubscription(
-  //     COMPLAINTS_UPDATED,
-  //   );
-  //   if (!loading) {
-  //     const complaint = data[0]
-  //     return (
-  //       <tr>
-  //         <td> {complaint.company.name}</td>
-  //         <td>{complaint.complaint}</td>
-  //         <td>{complaint.source}</td>
-  //       </tr>
-  //     )
-  //   }
-  //   return <div></div>
-  // }
-
-  // function ComplaintsPageWithData() {
-  //   const result = useQuery(
-  //     COMPLAINTS_UPDATED
-  //   );
-  //   return <CommentsPage {...result} />;
-  // }
-
-
-  // function CommentsPageWithData() {
-  //   const { subscribeToMore, ...result } = useQuery(
-  //     COMPLAINTS_UPDATED,
-  //   );
-  
-  //   return (
-  //     <CommentsPage
-  //       {...result}
-  //       subscribeToNewComplaints={() =>
-  //         subscribeToMore({
-  //           document: COMPLAINTS_UPDATED,
-  //           updateQuery: (prev, { subscriptionData }) => {
-  //             if (!subscriptionData.data) return prev;
-  //             const newFeedItem = subscriptionData.data;
-  
-  //             return Object.assign({}, prev, {
-  //               post: {
-  //                 comments: [newFeedItem, ...prev.post.comments]
-  //               }
-  //             });
-  //           }
-  //         })
-  //       }
-  //     />
-  //   );
-  // }
-
-  const createRow = () => {
-    const rows = complaints.map((complaint)=> {
+  function LatestComplaint() {
+    const { data, loading } = useSubscription(
+      COMPLAINTS_UPDATED,
+    );
+    if (!loading) {
+      const complaint = data[0]
       return (
         <tr>
           <td> {complaint.company.name}</td>
@@ -113,20 +65,46 @@ function DisplayComplaints() {
           <td>{complaint.source}</td>
         </tr>
       )
-    })
-    return rows;
+    }
+    return <div></div>
   }
 
-  return (
-    <table>
-      <tr>
-        <th>Company Name</th>
-        <th>Complaint</th>
-        <th>Source</th>
-      </tr>
-      {createRow()}
-    </table>
-  )
+  function ComplaintsPageWithData() {
+    const result = useQuery(
+      COMPLAINTS_UPDATED
+    );
+    return <CommentsPage {...result} />;
+  }
+
+
+  function CommentsPageWithData() {
+    const { subscribeToMore, ...result } = useQuery(
+      COMPLAINTS_UPDATED,
+    );
+  
+    return (
+      <CommentsPage
+        {...result}
+        subscribeToNewComplaints={() =>
+          subscribeToMore({
+            document: COMPLAINTS_UPDATED,
+            updateQuery: (prev, { subscriptionData }) => {
+              if (!subscriptionData.data) return prev;
+              const newFeedItem = subscriptionData.data;
+  
+              return Object.assign({}, prev, {
+                post: {
+                  comments: [newFeedItem, ...prev.post.comments]
+                }
+              });
+            }
+          })
+        }
+      />
+    );
+  }
+
+  return ComplaintsPageWithData();
 }
 
 export default DisplayComplaints;
